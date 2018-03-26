@@ -45,9 +45,7 @@ class ViewController: UIViewController {
         boxNode.geometry = box //Set the nodes content to be the box
         boxNode.position = SCNVector3(0,0,-0.2) //Position is relative to the camera, therefore we place it 0.2m infront of us.
         
-        let scene = SCNScene()
-        scene.rootNode.addChildNode(boxNode)
-        sceneView.scene = scene
+        sceneView.scene.rootNode.addChildNode(boxNode)
     }
 }
 
