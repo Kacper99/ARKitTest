@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addBox()
+        addTapGestureToSceneView()
     }
 
     /**
@@ -46,6 +47,19 @@ class ViewController: UIViewController {
         boxNode.position = SCNVector3(0,0,-0.2) //Position is relative to the camera, therefore we place it 0.2m infront of us.
         
         sceneView.scene.rootNode.addChildNode(boxNode)
+    }
+    
+    @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
+        let tapLocation = recognizer.location(in: sceneView) //Retrieve the users tap location relative to the sceneView
+        let hitTestResults = sceneView.hitTest(tapLocation) //See if we tapped any nodes
+        guard let node = hitTestResults.first?.node else {return} //Unwrap first node from hit test and if the first result doesnt contain atleast one node remove the first node tapped from it's parent node
+        node.removeFromParentNode()
+        
+    }
+    
+    func addTapGestureToSceneView() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.didTap(withGestureRecognizer:))) //Initialize a tap gesture recognizer with the target set to the view controller and action selector to didTap
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
     }
 }
 
