@@ -55,7 +55,16 @@ class ViewController: UIViewController {
     @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView) //Retrieve the users tap location relative to the sceneView
         let hitTestResults = sceneView.hitTest(tapLocation) //See if we tapped any nodes
-        guard let node = hitTestResults.first?.node else {return} //Unwrap first node from hit test and if the first result doesnt contain atleast one node remove the first node tapped from it's parent node
+        guard let node = hitTestResults.first?.node else {
+            let hitTestResultsWithFeaturePoint = sceneView.hitTest(tapLocation, types: .featurePoint) //Search for real world objects or surfaces
+            
+            if let hitTestResultWithFeaturePoint = hitTestResultsWithFeaturePoint.first { //Unwrap as it may not always be a hit test result
+                
+                let translation = hitTestResultWithFeaturePoint.worldTransform.translation //Transform matrix to float3
+                addBox(x: translation.x,y: translation.y,z: translation.z)
+            }
+            return
+        } //Unwrap first node from hit test and if the first result doesnt contain atleast one node remove the first node tapped from it's parent node
         node.removeFromParentNode()
         
     }
