@@ -49,6 +49,9 @@ class ViewController: UIViewController {
         sceneView.scene.rootNode.addChildNode(boxNode)
     }
     
+    /**
+     Removes a box from the scene
+     */
     @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView) //Retrieve the users tap location relative to the sceneView
         let hitTestResults = sceneView.hitTest(tapLocation) //See if we tapped any nodes
@@ -57,6 +60,9 @@ class ViewController: UIViewController {
         
     }
     
+    /**
+     Add a tap gesture recogniser to the scene view
+    */
     func addTapGestureToSceneView() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.didTap(withGestureRecognizer:))) //Initialize a tap gesture recognizer with the target set to the view controller and action selector to didTap
         sceneView.addGestureRecognizer(tapGestureRecognizer)
