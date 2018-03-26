@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         addBox()
         addTapGestureToSceneView()
     }
@@ -55,6 +56,7 @@ class ViewController: UIViewController {
     @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView) //Retrieve the users tap location relative to the sceneView
         let hitTestResults = sceneView.hitTest(tapLocation) //See if we tapped any nodes
+        
         guard let node = hitTestResults.first?.node else {
             let hitTestResultsWithFeaturePoint = sceneView.hitTest(tapLocation, types: .featurePoint) //Search for real world objects or surfaces
             
@@ -64,7 +66,7 @@ class ViewController: UIViewController {
                 addBox(x: translation.x,y: translation.y,z: translation.z)
             }
             return
-        } //Unwrap first node from hit test and if the first result doesnt contain atleast one node remove the first node tapped from it's parent node
+        }
         node.removeFromParentNode()
         
     }
