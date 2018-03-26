@@ -39,12 +39,12 @@ class ViewController: UIViewController {
     /**
     Used to add a box into the enviroment
     */
-    func addBox(){
+    func addBox(x: Float = 0, y: Float = 0, z: Float = -0.2){
         let box = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0) //The box to add, can make edges rounded as well
         
         let boxNode = SCNNode() //Represents the position and coordinates of an object in 3D space
         boxNode.geometry = box //Set the nodes content to be the box
-        boxNode.position = SCNVector3(0,0,-0.2) //Position is relative to the camera, therefore we place it 0.2m infront of us.
+        boxNode.position = SCNVector3(x,y,z) //Position is relative to the camera, therefore we place it 0.2m infront of us.
         
         sceneView.scene.rootNode.addChildNode(boxNode)
     }
@@ -71,6 +71,7 @@ class ViewController: UIViewController {
 
 /**
  Transforms a matrix into a float 3
+ - Returns: The matrix as a float3
  */
 extension float4x4 {
     var translation: float3 {
