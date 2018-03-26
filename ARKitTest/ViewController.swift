@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         addBox()
         addTapGestureToSceneView()
     }
@@ -39,12 +40,12 @@ class ViewController: UIViewController {
     /**
     Used to add a box into the enviroment
     */
-    func addBox(){
+    func addBox(x: Float = 0, y: Float = 0, z: Float = -0.2){
         let box = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0) //The box to add, can make edges rounded as well
         
         let boxNode = SCNNode() //Represents the position and coordinates of an object in 3D space
         boxNode.geometry = box //Set the nodes content to be the box
-        boxNode.position = SCNVector3(0,0,-0.2) //Position is relative to the camera, therefore we place it 0.2m infront of us.
+        boxNode.position = SCNVector3(x,y,z) //Position is relative to the camera, therefore we place it 0.2m infront of us.
         
         sceneView.scene.rootNode.addChildNode(boxNode)
     }
@@ -55,7 +56,17 @@ class ViewController: UIViewController {
     @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView) //Retrieve the users tap location relative to the sceneView
         let hitTestResults = sceneView.hitTest(tapLocation) //See if we tapped any nodes
-        guard let node = hitTestResults.first?.node else {return} //Unwrap first node from hit test and if the first result doesnt contain atleast one node remove the first node tapped from it's parent node
+        
+        guard let node = hitTestResults.first?.node else {
+            let hitTestResultsWithFeaturePoint = sceneView.hitTest(tapLocation, types: .featurePoint) //Search for real world objects or surfaces
+            
+            if let hitTestResultWithFeaturePoint = hitTestResultsWithFeaturePoint.first { //Unwrap as it may not always be a hit test result
+                
+                let translation = hitTestResultWithFeaturePoint.worldTransform.translation //Transform matrix to float3
+                addBox(x: translation.x,y: translation.y,z: translation.z)
+            }
+            return
+        }
         node.removeFromParentNode()
         
     }
@@ -66,6 +77,17 @@ class ViewController: UIViewController {
     func addTapGestureToSceneView() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.didTap(withGestureRecognizer:))) //Initialize a tap gesture recognizer with the target set to the view controller and action selector to didTap
         sceneView.addGestureRecognizer(tapGestureRecognizer)
+    }
+}
+
+/**
+ Transforms a matrix into a float 3
+ - Returns: The matrix as a float3
+ */
+extension float4x4 {
+    var translation: float3 {
+        let translation = self.columns.3
+        return float3(translation.x, translation.y, translation.z)
     }
 }
 
